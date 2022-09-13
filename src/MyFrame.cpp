@@ -5,44 +5,53 @@
 
 
 MyFrame::MyFrame()
-    : wxFrame(NULL, ID_MyFrame, "Hello World")
+    : wxFrame(NULL, ID_MyFrame, "GRDECL Converter")
 {
     setupMenuBar();    
 
-    myBtn = new wxButton(this, ID_MyBtn, "Click me");
+    files = std::make_shared<std::vector<std::string>>();
 
-     Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::OnButtonClick, this, ID_MyBtn);
+    Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::OnButtonClick, this, ID_MyBtn);
 
-     myROText = new wxStaticText(this, ID_MyROText, "No active task.", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL);
+    myROText = new wxStaticText(this, ID_MyROText, "No active task.", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL);
 
-     myTxt = new wxTextCtrl(this, ID_MyTxt, "Stuff");
-     sizer = new wxGridSizer(20,1,1,1);
+    myBtn = new wxButton(this, ID_StartBtn, "Start Processing");
 
-     sizer->Add(myROText, 1, wxEXPAND | wxALL);
-     sizer->Add(myTxt, 1, wxEXPAND | wxALL);
-     sizer->Add(myBtn, 1, wxEXPAND | wxALL);
+    sizer = new wxBoxSizer(wxVERTICAL);
 
-     this->SetSizer(sizer);
-     sizer->Layout();
+    sizer->Add(myROText, 0, wxEXPAND | wxALL, 5);
 
-     timer = new RenderTimer(this);
+    timer = new RenderTimer(this);
 
-     Bind(wxEVT_PAINT, &MyFrame::OnPaint, this, ID_MyFrame);
+    Bind(wxEVT_PAINT, &MyFrame::OnPaint, this, ID_MyFrame);
 
+    fileListPanel = new FileListPanel(this, ID_FileListPanel);
 
+    // configPane = new wxTextCtrl(this, ID_ConfigInput, "Configuration...\nPCW=Pth_x\nPCW=Pth_z", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+
+    // configPane->SetMaxSize({99999, 100});
+    
+    configPanel = new ConfigPanel(this, ID_ConfigPanel);
+    sizer->Add(configPanel, 1, wxEXPAND | wxTOP | wxBOTTOM, 5);
+
+    // sizer->Add(configPane, 1, wxEXPAND | wxTOP | wxBOTTOM, 5);
+    sizer->Add(fileListPanel, 1, wxTOP | wxBOTTOM, 5);
+    sizer->Add(myBtn, 0, wxEXPAND | wxLEFT, 5);
+
+    this->SetSizer(sizer);
+    sizer->Layout();
 }
 
 MyFrame::~MyFrame()
 {
-    delete myBtn;
-    delete myTxt;
 }
 
 void MyFrame::setupMenuBar()
 {
     wxMenu *menuFile = new wxMenu;
-    menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-            "Help string shown in status bar for this menu item");
+
+    menuFile->AppendSeparator();
+    menuFile->Append(ID_FileListOpen, "&Open Files...", "Opens a file select dialog tom choose GRDECL files");
 
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT);
@@ -59,11 +68,9 @@ void MyFrame::setupMenuBar()
     CreateStatusBar();
     SetStatusText("Welcome to wxWidgets!");
 
-    Bind(wxEVT_MENU, &MyFrame::OnHello, this, ID_Hello);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
-
-
+    Bind(wxEVT_MENU, &MyFrame::OnFileSelect, this, ID_FileListOpen);
 
 }
 
@@ -72,53 +79,55 @@ void MyFrame::OnExit(wxCommandEvent& event)
     Close(true);
 }
 
-void MyFrame::OnAbout(wxCommandEvent& event)
+void MyFrame::OnFileSelect(wxCommandEvent &event)
 {
-    wxMessageBox("This is a wxWidgets Hello World Example",
-            "About Hello World", wxOK | wxICON_INFORMATION);
+    wxFileDialog dialog(this, _("Open Files"), "", "", "", wxFD_MULTIPLE);
+    dialog.ShowModal();
+
+    wxArrayString filenames{};
+    dialog.GetPaths(filenames);
+
+    wxString cwd = wxGetCwd() + "/";
+
+    if ( files )
+        files->clear();
+
+    for ( auto &str : filenames )
+    {
+        if ( str.find(cwd) != std::string::npos ) {
+            str.replace(0, cwd.length(), "");
+        }
+
+        files->emplace_back(str);
+    }
+
+    if ( fileListPanel )
+    {
+        fileListPanel->clear();
+        fileListPanel->setFilenames(files);
+    }
+
+    sizer->Layout();
+
 }
 
-void MyFrame::OnHello(wxCommandEvent& event)
+void MyFrame::OnAbout(wxCommandEvent& event)
 {
-    wxLogMessage("Hello world from wxWidgets");
+    wxMessageBox("This is a graphical utility for changing labels in GRDECL files exported by Petrel so that Permedia can read them",
+            "About this program", wxOK | wxICON_INFORMATION);
 }
+
 
 void MyFrame::OnButtonClick(wxCommandEvent& event)
 {
-    wxMessageBox("Starting conversion. The application may be unresponsive while processing the file", "Info", wxOK | wxICON_WARNING);
 
-    myTxt->Show(true);
-    sizer->Layout();
-    this->Refresh();
-    this->Update();
-    if ( task ) 
-        delete task;
-
-    task = new FileProcessorTask(std::string(myTxt->GetValue()), "output.txt");
-
-    task->run();
     timer->start();
 }
 
 void MyFrame::OnPaint(wxPaintEvent &evt)
 {
-    if ( task ) {
-        int progress = task->GetProgress();
-
-        if ( task->HasFailed() ) {
-            wxMessageBox(task->GetLastError(), "Error!", wxOK | wxICON_ERROR);
-            task->finish();
-        }
-            
-
-        if ( ! task->isFinished() )
-            myROText->SetLabel("Processed " + std::to_string(progress) + " lines");
-        else {
-            myROText->SetLabel("Finished processing " + std::to_string(progress) + " lines");
-            task->finish();
-        }
-
-    }
+    // Propagate the event
+    evt.Skip(true);
 }
 
 void MyFrame::setProgress(int progress)

@@ -4,6 +4,12 @@
 #include <wx/wx.h>
 #include "Task.hpp"
 
+#include "ConfigPanel.hpp"
+#include "FileListPanel.hpp"
+#include <vector>
+#include <memory>
+#include <string>
+
 enum
 {
     ID_MyFrame = 1,
@@ -11,7 +17,12 @@ enum
     ID_MyBtn = 3,
     ID_MyTxt,
     ID_MyROText,
-    ID_MyGauge
+    ID_MyGauge,
+    ID_FileListPanel,
+    ID_FileListOpen,
+    ID_ConfigInput,
+    ID_ConfigPanel,
+    ID_StartBtn
 };
 
 class RenderTimer : public wxTimer
@@ -41,19 +52,27 @@ public:
 
     void setProgress(int progress);
 private:
-    void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnButtonClick(wxCommandEvent& event);
     void OnPaint(wxPaintEvent& event);
+    void OnFileSelect(wxCommandEvent &event);
 
     void setupMenuBar();
 
     wxStaticText *myROText;
     wxButton *myBtn;
     wxTextCtrl *myTxt;
+    FileListPanel *fileListPanel;
 
-    wxGridSizer *sizer;
+    std::shared_ptr<std::vector<std::string>> files;
+
+    wxBoxSizer *sizer;
+
+    wxTextCtrl *configPane;
+
+    ConfigPanel *configPanel;
+
 
     FileProcessorTask *task = nullptr;
 
