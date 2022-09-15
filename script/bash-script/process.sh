@@ -35,6 +35,12 @@ file_checks
 # Reads patterns from `patterns.txt` file
 read_patterns
 
+# Copy .DIN and .PVT files
+if [ $MODE -eq 1 ]; then
+    COPY_FILES=($(ls ${INPUT_FILE} | grep -v -i .grdecl))
+    printf "%s\n" ${COPY_FILES[@]} | xargs -I{} cp -r ${INPUT_FILE}/{} ${OUTPUT_FILE}
+fi
+
 # Default back to default patterns if read_patterns fails
 if [ $result -eq 0 ]; then
     set_default_patterns
@@ -47,3 +53,5 @@ else
 fi
 
 # -------------- REPLACE PROCEDURE COMPLETED ---------------
+
+
