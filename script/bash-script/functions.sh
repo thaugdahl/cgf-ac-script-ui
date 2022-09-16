@@ -27,6 +27,12 @@ file_checks() {
 
     if [ -d ${INPUT_FILE} ]; then
         MODE=1
+        # Create the output directory if it does not already exist
+        if [ ! -d $OUTPUT_FILE ]; then
+            mkdir -v $OUTPUT_FILE
+        fi
+
+
     fi
 
     if [ -f ${OUTPUT_FILE} ]; then
@@ -102,11 +108,6 @@ replace_entire_directory() {
     cd $INPUT_FILE
     FILES=($(ls *${FILE_SUFFIX}))
     cd ..
-
-    # Create the output directory if it does not already exist
-    if [ ! -d $OUTPUT_FILE ]; then
-        mkdir $OUTPUT_FILE 2>/dev/null
-    fi
 
     # echo ${FILES} | xargs -I{} echo {}
     printf "%s\n" ${FILES[@]} | xargs -P 8 -I{} sh -c "sed \"${SED_PATTERN}\" $INPUT_FILE/{} > $OUTPUT_FILE/{}"
