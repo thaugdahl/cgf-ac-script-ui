@@ -15,12 +15,12 @@ RUN_PREFIX=$2
 
 MIGRATION_EXECUTABLE=mpath_migration_m3_64
 
-which ${MIGRATION_EXECUTABLE} 2>/dev/null
-
-if [ $? -gt 0 ]; then
-    echo "${MIGRATION_EXECUTABLE} not found. Add it to your PATH and try again"
-    exit
-fi
+# which ${MIGRATION_EXECUTABLE} 2>/dev/null
+# 
+# if [ $? -gt 0 ]; then
+#     echo "${MIGRATION_EXECUTABLE} not found. Add it to your PATH and try again"
+#     exit
+# fi
 
 # DIN_DIR=${INPUT_DIN%/*}
 
