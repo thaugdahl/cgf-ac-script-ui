@@ -4,3 +4,4 @@
 -DWXUSINGDLL 
 -D__WXGTK__ 
 -pthread
+-std=c++17

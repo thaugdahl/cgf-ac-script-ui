@@ -39,6 +39,7 @@ struct Coord
 
     static Coord<T> fromBinary(unsigned char *buf);
     
+    // TODO: Make a serialize / print function
 
 
     T x = static_cast<T>(0);
