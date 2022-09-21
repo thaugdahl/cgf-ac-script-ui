@@ -16,10 +16,15 @@ ACT_Reader::ACT_Reader(const std::string &_filename)
 #ifdef VERBOSE
     std::cout << "Opened file " << filename << "\n";
 #endif
-
-
 }
 
+
+ACT_File::ACT_File()
+{
+    pathwayCellData = std::make_shared<std::vector<PathwayCellData>>();
+    cellData = std::make_shared<std::vector<CellData>>();
+    bodyData = std::make_shared<std::vector<BodyData>>();
+}
 void ACT_File::print()
 {
     std::cout << std::setprecision(5);
@@ -155,11 +160,10 @@ std::shared_ptr<ACT_File> ACT_Reader::read()
     // Read First binary table
     getNewLine();
 
-    readBinaryTable(*result->pathwayCellData);
+    readBinaryTable(*result->pathwayCellData, result->pathwaycelldata_length);
 
     // Print the summary
     result->print();
-
 
 
 
@@ -169,7 +173,7 @@ std::shared_ptr<ACT_File> ACT_Reader::read()
 }
 
 template <typename T>
-void ACT_Reader::readBinaryTable(std::vector<T> &vec)
+void ACT_Reader::readBinaryTable(std::vector<T> &vec, std::size_t num_elements)
 {
     constexpr std::size_t sz = sizeof(T);
 
@@ -179,15 +183,42 @@ void ACT_Reader::readBinaryTable(std::vector<T> &vec)
         throw std::runtime_error("Could not find binary table header");
     }
 
-    std::size_t bytes_to_read = sz * result->pathwaycelldata_length;
+    std::size_t bytes_to_read = sz * num_elements;
     std::cout << "Bytes to read: " << bytes_to_read << "\n";
 
     // TODO: Need to read all data, including newlines as it is binary encoded in an ascii file
     getNewLine();
-    getNewLine();
+    // getNewLine();
     std::cout << current_line.size() << std::endl;
-     
 
+    std::cout << num_elements << std::endl;
+
+    char *buffer = new char[bytes_to_read];
+
+    std::cout << "Current offset: " << fh.tellg() << "\n";
+
+    fh.read(buffer, bytes_to_read);
+
+    std::cout << "Current offset: " << fh.tellg() << "\n";
+
+    char *current_elem_ptr = buffer + 0; 
+
+    std::cout << sizeof(T) << std::endl;
+
+    for ( int i = 0; i < num_elements; i++ )
+    {
+        // current_elem_ptr = buffer + i;
+
+        T data = *reinterpret_cast<T *>(current_elem_ptr);
+        data.print();
+
+        // TODO: Emplace data into vector
+        vec.emplace_back(data);
+
+
+        current_elem_ptr += sizeof(T);
+    }
+    
 }
 
 bool ACT_Reader::isBinaryTableHeader()

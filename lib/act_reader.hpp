@@ -34,6 +34,31 @@ struct PathwayCellData
     float   swc;
     float   pthx;
     float   pthz;
+
+    void print()
+    {
+        std::cout << "=====Pathway Cell Data====" << "\n";
+        std::cout << "index: " << index << "\n";
+        std::cout << "sub_index: " << sub_index << "\n";
+        std::cout << "porosity: " << porosity << "\n";
+        std::cout << "invasion_sequence: " << invasion_sequence << "\n";
+        std::cout << "invade_temp: " << invade_temp << "\n";
+        std::cout << "invade_press: " << invade_press << "\n";
+        std::cout << "paleo_filling_fraction: " << paleo_filling_fraction << "\n";
+        std::cout << "bulk_volume: " << bulk_volume << "\n";
+        std::cout << "paleo_z: " << paleo_z << "\n";
+        std::cout << "paleo_crit: " << paleo_crit << "\n";
+        std::cout << "pristine_crit: " << pristine_crit << "\n";
+        std::cout << "last_expulsion_index: " << last_expulsion_index << "\n";
+        std::cout << "last_expulsion_sub_index: " << last_expulsion_sub_index << "\n";
+        std::cout << "species_00: " << species_00 << "\n";
+        std::cout << "species_01: " << species_01 << "\n";
+        std::cout << "scaled_socr: " << scaled_socr << "\n";
+        std::cout << "socr: " << socr << "\n";
+        std::cout << "swc: " << swc << "\n";
+        std::cout << "pthx: " << pthx << "\n";
+        std::cout << "pthz: " << pthz << "\n";
+    }
 };
 
 struct CellData
@@ -64,6 +89,36 @@ struct CellData
     float   swc;
     float   pthx;
     float   pthz;
+
+    void print()
+    {
+        std::cout << "index: " << index << "\n";
+        std::cout << "sub_index: " << sub_index << "\n";
+        std::cout << "porosity: " << porosity << "\n";
+        std::cout << "invasion_sequence: " << invasion_sequence << "\n";
+        std::cout << "invade_temp: " << invade_temp << "\n";
+        std::cout << "invade_press: " << invade_press << "\n";
+        std::cout << "path_index: " << path_index << "\n";
+        std::cout << "vapor_liquid_z: " << vapor_liquid_z << "\n";
+        std::cout << "meniscus_theta: " << meniscus_theta << "\n";
+        std::cout << "meniscus_phi: " << meniscus_phi << "\n";
+        std::cout << "paleo_crit: " << paleo_crit << "\n";
+        std::cout << "pristine_crit: " << pristine_crit << "\n";
+        std::cout << "paleo_z: " << paleo_z << "\n";
+        std::cout << "paleo_filling_fraction: " << paleo_filling_fraction << "\n";
+        std::cout << "bulk_volume: " << bulk_volume << "\n";
+        std::cout << "is_dry: " << is_dry << "\n";
+        std::cout << "cap_pressure: " << cap_pressure << "\n";
+        std::cout << "saturation_0_z: " << saturation_0_z << "\n";
+        std::cout << "liq_vol_0: " << liq_vol_0 << "\n";
+        std::cout << "vap_vol_0: " << vap_vol_0 << "\n";
+        std::cout << "brv_0: " << brv_0 << "\n";
+        std::cout << "scaled_socr: " << scaled_socr << "\n";
+        std::cout << "socr: " << socr << "\n";
+        std::cout << "swc: " << swc << "\n";
+        std::cout << "pthx: " << pthx << "\n";
+        std::cout << "pthz: " << pthz << "\n";
+    }
 };
 
 struct BodyData
@@ -88,13 +143,38 @@ struct BodyData
     float   liquid_species_01;
     float   vapor_species_00;
     float   vapor_species_01;
+
+    void print()
+    {
+        std::cout << "index: " << index << "\n";
+        std::cout << "acc_state: " << acc_state << "\n";
+        std::cout << "pet_phase: " << pet_phase << "\n";
+        std::cout << "last_flash_temp: " << last_flash_temp << "\n";
+        std::cout << "last_flash_press: " << last_flash_press << "\n";
+        std::cout << "liq_volume: " << liq_volume << "\n";
+        std::cout << "vap_volume: " << vap_volume << "\n";
+        std::cout << "min_z: " << min_z << "\n";
+        std::cout << "crest_x: " << crest_x << "\n";
+        std::cout << "crest_y: " << crest_y << "\n";
+        std::cout << "owc_depth_proxy: " << owc_depth_proxy << "\n";
+        std::cout << "liq_ift: " << liq_ift << "\n";
+        std::cout << "liq_density: " << liq_density << "\n";
+        std::cout << "vap_ift: " << vap_ift << "\n";
+        std::cout << "vap_density: " << vap_density << "\n";
+        std::cout << "free_water_level: " << free_water_level << "\n";
+        std::cout << "liquid_species_00: " << liquid_species_00 << "\n";
+        std::cout << "liquid_species_01: " << liquid_species_01 << "\n";
+        std::cout << "vapor_species_00: " << vapor_species_00 << "\n";
+        std::cout << "vapor_species_01: " << vapor_species_01 << "\n";
+    }
+
 };
 
 
 struct ACT_File
 {
 
-    ACT_File() {}
+    ACT_File();
     ~ACT_File() {}
 
     void print();
@@ -137,7 +217,7 @@ public:
     void readField(T &field);
 
     template <typename T>
-    void readBinaryTable(std::vector<T> &vec);
+    void readBinaryTable(std::vector<T> &vec, std::size_t num_elements);
 
 private:
     std::string filename;
