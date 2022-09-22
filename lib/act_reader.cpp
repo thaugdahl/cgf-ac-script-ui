@@ -18,6 +18,15 @@ ACT_Reader::ACT_Reader(const std::string &_filename)
 #endif
 }
 
+ACT_Reader::~ACT_Reader()
+{
+    std::cout << "Destroying ACT_Reader" << std::endl;
+    if ( fh.is_open() )
+    {
+        fh.close();
+    }
+}
+
 
 ACT_File::ACT_File()
 {
@@ -102,6 +111,16 @@ void ACT_Reader::readField(T &field)
 
 std::shared_ptr<ACT_File> ACT_Reader::read()
 {
+
+    if ( ! fh.is_open() )
+    {
+        fh.open(filename);
+    }
+
+    if ( ! fh.is_open() ) {
+        throw std::runtime_error("Failed to open " + filename);
+    }
+
     getNewLine();
     // Process header
     std::string label;
@@ -145,22 +164,43 @@ std::shared_ptr<ACT_File> ACT_Reader::read()
     getNewLine();
     readField(result->pvt_file);
 
+    // Skip stocktank_bp, stocktank_dp, stocktank_rhol,
+    // ---- stocktank_rhov, pathwaycelldata_fields, pathwaycelldata_fieldtypes
     skipLines(6);
     getNewLine();
     readField(result->pathwaycelldata_length);
 
+    // Skip Field Names and Fieldtypes
     skipLines(2);
     getNewLine();
     readField(result->celldata_length);
 
+    // Skip Field Names and Fieldtypes
     skipLines(2);
     getNewLine();
     readField(result->bodydata_length);
 
-    // Read First binary table
+    // Read Pathway Cell Data Binary Table
     getNewLine();
-
     readBinaryTable(*result->pathwayCellData, result->pathwaycelldata_length);
+
+    while ( ! isEndFooter() )
+        skipLines(1);
+
+    // Read Cell Data Binary Table
+    getNewLine();
+    readBinaryTable(*result->cellData, result->celldata_length);
+
+    while ( ! isEndFooter() )
+        skipLines(1);
+
+    // Read Body Data Binary Table
+    getNewLine();
+    readBinaryTable(*result->bodyData, result->bodydata_length);
+
+    // All information of interest is now read
+
+    fh.close();
 
     // Print the summary
     result->print();
@@ -184,41 +224,33 @@ void ACT_Reader::readBinaryTable(std::vector<T> &vec, std::size_t num_elements)
     }
 
     std::size_t bytes_to_read = sz * num_elements;
-    std::cout << "Bytes to read: " << bytes_to_read << "\n";
 
-    // TODO: Need to read all data, including newlines as it is binary encoded in an ascii file
+    // Progress past the Binary Table Header into the binary data
     getNewLine();
-    // getNewLine();
-    std::cout << current_line.size() << std::endl;
 
-    std::cout << num_elements << std::endl;
-
+    // Read the entire binary table into a char buffer
     char *buffer = new char[bytes_to_read];
-
-    std::cout << "Current offset: " << fh.tellg() << "\n";
-
     fh.read(buffer, bytes_to_read);
-
-    std::cout << "Current offset: " << fh.tellg() << "\n";
-
     char *current_elem_ptr = buffer + 0; 
 
-    std::cout << sizeof(T) << std::endl;
-
+    // Reinterpet raw data as instances of T
     for ( int i = 0; i < num_elements; i++ )
     {
-        // current_elem_ptr = buffer + i;
-
         T data = *reinterpret_cast<T *>(current_elem_ptr);
-        data.print();
 
-        // TODO: Emplace data into vector
         vec.emplace_back(data);
 
-
+        // Advance buffer pointer by an entire T
         current_elem_ptr += sizeof(T);
     }
     
+}
+
+std::shared_ptr<ACT_File> ACT_Reader::readFile(const std::string &_filename)
+{
+    ACT_Reader reader{_filename};
+
+    return reader.read();
 }
 
 bool ACT_Reader::isBinaryTableHeader()
@@ -233,7 +265,7 @@ bool ACT_Reader::isBinaryTableHeader()
 
 bool ACT_Reader::isEndFooter()
 {
-    if ( current_line.find("[END]") >= 0 )
+    if ( current_line.find("[END]") != std::string::npos )
     {
         return true;
     }

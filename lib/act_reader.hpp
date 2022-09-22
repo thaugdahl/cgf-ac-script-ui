@@ -59,6 +59,62 @@ struct PathwayCellData
         std::cout << "pthx: " << pthx << "\n";
         std::cout << "pthz: " << pthz << "\n";
     }
+
+    std::string csvHeader()
+    {
+        std::ostringstream ss{};
+    ss << "index" << "\t"
+    << "sub_index" << "\t"
+    << "porosity" << "\t"
+    << "invasion_sequence" << "\t"
+    << "invade_temp" << "\t"
+    << "invade_press" << "\t"
+    << "paleo_filling_fraction" << "\t"
+    << "bulk_volume" << "\t"
+    << "paleo_z" << "\t"
+    << "paleo_crit" << "\t"
+    << "pristine_crit" << "\t"
+    << "last_expulsion_index" << "\t"
+    << "last_expulsion_sub_index" << "\t"
+    << "species_00" << "\t"
+    << "species_01" << "\t"
+    << "scaled_socr" << "\t"
+    << "socr" << "\t"
+    << "swc" << "\t"
+    << "pthx" << "\t"
+    << "pthz" << "\t";
+
+    return ss.str();
+
+
+    }
+
+    std::string printCSV()
+    {
+        std::ostringstream ss{};
+        ss << index << "\t"
+            << sub_index << "\t"
+            << porosity << "\t"
+            << invasion_sequence << "\t"
+            << invade_temp << "\t"
+            << invade_press << "\t"
+            << paleo_filling_fraction << "\t"
+            << bulk_volume << "\t"
+            << paleo_z << "\t"
+            << paleo_crit << "\t"
+            << pristine_crit << "\t"
+            << last_expulsion_index << "\t"
+            << last_expulsion_sub_index << "\t"
+            << species_00 << "\t"
+            << species_01 << "\t"
+            << scaled_socr << "\t"
+            << socr << "\t"
+            << swc << "\t"
+            << pthx << "\t"
+            << pthz << "\t";
+
+        return ss.str();
+    }
 };
 
 struct CellData
@@ -92,6 +148,7 @@ struct CellData
 
     void print()
     {
+        std::cout << "=====Cell Data====" << "\n";
         std::cout << "index: " << index << "\n";
         std::cout << "sub_index: " << sub_index << "\n";
         std::cout << "porosity: " << porosity << "\n";
@@ -118,6 +175,75 @@ struct CellData
         std::cout << "swc: " << swc << "\n";
         std::cout << "pthx: " << pthx << "\n";
         std::cout << "pthz: " << pthz << "\n";
+    }
+
+    std::string csvHeader()
+    {
+
+        std::ostringstream ss{};
+    ss << "index" << "\t"
+    << "sub_index" << "\t"
+    << "porosity" << "\t"
+    << "invasion_sequence" << "\t"
+    << "invade_temp" << "\t"
+    << "invade_press" << "\t"
+    << "path_index" << "\t"
+    << "vapor_liquid_z" << "\t"
+    << "meniscus_theta" << "\t"
+    << "meniscus_phi" << "\t"
+    << "paleo_crit" << "\t"
+    << "pristine_crit" << "\t"
+    << "paleo_z" << "\t"
+    << "paleo_filling_fraction" << "\t"
+    << "bulk_volume" << "\t"
+    << "is_dry" << "\t"
+    << "cap_pressure" << "\t"
+    << "saturation_0_z" << "\t"
+    << "liq_vol_0" << "\t"
+    << "vap_vol_0" << "\t"
+    << "brv_0" << "\t"
+    << "scaled_socr" << "\t"
+    << "socr" << "\t"
+    << "swc" << "\t"
+    << "pthx" << "\t"
+    << "pthz" << "\t";
+
+    return ss.str();
+
+    }
+
+    std::string printCSV()
+    {
+        std::ostringstream ss{};
+    ss << index << "\t"
+    << sub_index << "\t"
+    << porosity << "\t"
+    << invasion_sequence << "\t"
+    << invade_temp << "\t"
+    << invade_press << "\t"
+    << path_index << "\t"
+    << vapor_liquid_z << "\t"
+    << meniscus_theta << "\t"
+    << meniscus_phi << "\t"
+    << paleo_crit << "\t"
+    << pristine_crit << "\t"
+    << paleo_z << "\t"
+    << paleo_filling_fraction << "\t"
+    << bulk_volume << "\t"
+    << is_dry << "\t"
+    << cap_pressure << "\t"
+    << saturation_0_z << "\t"
+    << liq_vol_0 << "\t"
+    << vap_vol_0 << "\t"
+    << brv_0 << "\t"
+    << scaled_socr << "\t"
+    << socr << "\t"
+    << swc << "\t"
+    << pthx << "\t"
+    << pthz << "\t";
+
+    return ss.str();
+
     }
 };
 
@@ -146,6 +272,7 @@ struct BodyData
 
     void print()
     {
+        std::cout << "=====Body Data====" << "\n";
         std::cout << "index: " << index << "\n";
         std::cout << "acc_state: " << acc_state << "\n";
         std::cout << "pet_phase: " << pet_phase << "\n";
@@ -166,6 +293,61 @@ struct BodyData
         std::cout << "liquid_species_01: " << liquid_species_01 << "\n";
         std::cout << "vapor_species_00: " << vapor_species_00 << "\n";
         std::cout << "vapor_species_01: " << vapor_species_01 << "\n";
+    }
+
+    std::string csvHeader()
+    {
+        std::ostringstream ss{};
+
+    ss << "index" << "\t"
+    << "acc_state" << "\t"
+    << "pet_phase" << "\t"
+    << "last_flash_temp" << "\t"
+    << "last_flash_press" << "\t"
+    << "liq_volume" << "\t"
+    << "vap_volume" << "\t"
+    << "min_z" << "\t"
+    << "crest_x" << "\t"
+    << "crest_y" << "\t"
+    << "owc_depth_proxy" << "\t"
+    << "liq_ift" << "\t"
+    << "liq_density" << "\t"
+    << "vap_ift" << "\t"
+    << "vap_density" << "\t"
+    << "free_water_level" << "\t"
+    << "liquid_species_00" << "\t"
+    << "liquid_species_01" << "\t"
+    << "vapor_species_00" << "\t"
+    << "vapor_species_01" << "\t";
+    return ss.str();
+    }
+
+    std::string printCSV()
+    {
+        std::ostringstream ss{};
+        ss << index << "\t"
+    << acc_state << "\t"
+    << pet_phase << "\t"
+    << last_flash_temp << "\t"
+    << last_flash_press << "\t"
+    << liq_volume << "\t"
+    << vap_volume << "\t"
+    << min_z << "\t"
+    << crest_x << "\t"
+    << crest_y << "\t"
+    << owc_depth_proxy << "\t"
+    << liq_ift << "\t"
+    << liq_density << "\t"
+    << vap_ift << "\t"
+    << vap_density << "\t"
+    << free_water_level << "\t"
+    << liquid_species_00 << "\t"
+    << liquid_species_01 << "\t"
+    << vapor_species_00 << "\t"
+    << vapor_species_01 << "\t";
+
+        return ss.str();
+
     }
 
 };
@@ -205,9 +387,11 @@ class ACT_Reader
 public:
     ACT_Reader() = delete;
     ACT_Reader(const std::string &_filename);
-    ~ACT_Reader() {}
+    ~ACT_Reader();
 
     std::shared_ptr<ACT_File> read();
+
+    static std::shared_ptr<ACT_File> readFile(const std::string &_filename);
 
     template <typename T>
     void readCoord(Coord<T> &coord);
