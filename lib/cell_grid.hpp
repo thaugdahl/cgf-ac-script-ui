@@ -78,10 +78,14 @@ public:
      */
     bool isValid(int index) const;
 
+    bool isValid(int _x, int _y, int _z) const;
+
     /**
      * Gets the number of cells in the grid.
      */
     std::size_t getNumCells() const;
+
+    const Coord<int> getDimensions() const;
 
     /**
      * Prints a summary of the grid.
@@ -107,6 +111,8 @@ public:
 
 
 private:
+
+    std::size_t calculateIndex(int _x, int _y, int _z) const;
 
     ///< The number of cells held by the grid.
     std::size_t numCells;

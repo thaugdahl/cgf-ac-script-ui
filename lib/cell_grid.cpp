@@ -53,7 +53,7 @@ CellData &CellGrid::atCoordinate(int _x, int _y, int _z)
     }
 
 
-    std::size_t index = _z * cellsPerSlice + _y * extents.get<0>() + _x;
+    std::size_t index = calculateIndex(_x, _y, _z);
 
     return atIndex(index);
 }
@@ -87,6 +87,20 @@ bool CellGrid::isValid(int index) const
     return (valid[bitmaskIndex] & ANDMask) > 0;
 }
 
+bool CellGrid::isValid(int _x, int _y, int _z) const
+{
+    std::size_t index = calculateIndex(_x, _y, _z);
+    return isValid(index);
+}
+
+
+const Coord<int> CellGrid::getDimensions() const
+{
+    return extents;
+}
+
+
+
 std::size_t CellGrid::getNumCells() const
 {
     return numCells;
@@ -101,6 +115,11 @@ std::size_t CellGrid::calculateStorageRequirements(int _x, int _y, int _z)
 {
     std::size_t numCells = _x * _y * _z;
     return calculateStorageRequirements(numCells);
+}
+
+std::size_t CellGrid::calculateIndex(int _x, int _y, int _z) const
+{
+   return _z * cellsPerSlice + _y * extents.get<0>() + _x;
 }
 
 void CellGrid::print() const
