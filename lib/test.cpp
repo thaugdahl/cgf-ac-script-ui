@@ -3,13 +3,11 @@
 #include "act_reader.hpp"
 
 #include <fstream>
+#include "cell_grid.hpp"
 
-int main()
+
+void exportACTFiles(std::shared_ptr<ACT_File> act_file)
 {
-
-    std::shared_ptr<ACT_File> act_file = ACT_Reader::readFile("testfiles/test.act");
-
-
     std::ofstream fh{"pwcelldata.csv", std::ios::out};
     if ( ! fh.is_open() )
         throw std::runtime_error("Failed to open pwcelldata.csv");
@@ -36,11 +34,22 @@ int main()
     {
         fh << x.printCSV() << std::endl;
     }
-
-
     fh.close();
 
+}
+
+int main()
+{
+
+    std::shared_ptr<ACT_File> act_file = ACT_Reader::readFile("testfiles/test.act");
+
+    auto &extents = act_file->extents;
+
+    std::cout << extents << std::endl;
+
+    std::size_t elementsPerSlice = extents.get<0>() * extents.get<1>();
+    std::size_t elementsTotal = elementsPerSlice * extents.get<2>();
 
 
-    
+    CellGrid grid{extents};
 }

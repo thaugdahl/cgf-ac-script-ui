@@ -31,8 +31,6 @@ constexpr std::array<std::string_view, 20> PathwayCellData_Fields =
 class ACT_CSVExport
 {
     
-
-
 };
 
 #endif

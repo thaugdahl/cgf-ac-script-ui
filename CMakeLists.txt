@@ -19,7 +19,7 @@ target_include_directories(main PUBLIC ${wxWidgets_INCLUDE_DIRS})
 target_compile_options(main PUBLIC ${wxWidgets_CXX_FLAGS})
 target_compile_definitions(main PUBLIC ${wxWidgets_DEFINITIONS})
 
-add_library(file_utils STATIC lib/act_reader.cpp lib/coord.cpp)
+add_library(file_utils STATIC lib/act_reader.cpp lib/coord.cpp lib/cell_grid.cpp)
 target_compile_options(file_utils PUBLIC "-lm")
 target_compile_options(file_utils PUBLIC 
     $<$<OR:$<COMPILE_LANGUAGE:CXX>,$<COMPILE_LANGUAGE:CUDA>>: # Set flags if C++ or CUDA

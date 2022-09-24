@@ -20,7 +20,6 @@ ACT_Reader::ACT_Reader(const std::string &_filename)
 
 ACT_Reader::~ACT_Reader()
 {
-    std::cout << "Destroying ACT_Reader" << std::endl;
     if ( fh.is_open() )
     {
         fh.close();
@@ -80,7 +79,7 @@ void ACT_Reader::skipLine()
 
 void ACT_Reader::skipLines(int n)
 {
-    for ( int i = 0; i < n; i++)
+    for ( decltype(n) i = 0; i < n; i++)
         std::getline(fh, current_line);
 }
 
@@ -234,7 +233,7 @@ void ACT_Reader::readBinaryTable(std::vector<T> &vec, std::size_t num_elements)
     char *current_elem_ptr = buffer + 0; 
 
     // Reinterpet raw data as instances of T
-    for ( int i = 0; i < num_elements; i++ )
+    for ( decltype(num_elements) i = 0; i < num_elements; i++ )
     {
         T data = *reinterpret_cast<T *>(current_elem_ptr);
 
@@ -255,12 +254,11 @@ std::shared_ptr<ACT_File> ACT_Reader::readFile(const std::string &_filename)
 
 bool ACT_Reader::isBinaryTableHeader()
 {
-    if ( current_line.find("binarytable") >= 0 )
+    if ( current_line.find("binarytable") != std::string::npos )
     {
         return true;
     }
     return false;
-    
 }
 
 bool ACT_Reader::isEndFooter()

@@ -4,6 +4,14 @@
 #include <stdexcept>
 #include <math.h>
 #include <array>
+#include <iostream>
+
+template <typename T>
+struct Coord;
+
+template <typename T>
+std::ostream &operator<< (std::ostream &os, const Coord<T> &coord);
+
 
 template <typename T>
 struct Coord
@@ -25,9 +33,13 @@ struct Coord
     // Move Assignment
     Coord &operator=(Coord<T> &&other);
 
+    friend std::ostream &operator<< <T>(std::ostream &os, const Coord<T> &coord);
+    
+    
+
     template <
         int idx> // Enable only if idx < 3
-    T get()
+    T get() const
     {
         static_assert(idx < 3, "Trying to access invalid index");
         return this->*idents[idx];
@@ -53,5 +65,13 @@ struct Coord
     };
     
 };
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const Coord<T> &coord)
+{
+     os << "(" << coord.template get<0>() << ", " << coord.template get<1>() << ", " << coord.template get<2>() << ")";
+     return os;
+}
+
 
 #endif
