@@ -52,4 +52,17 @@ int main()
 
 
     CellGrid grid{extents};
+
+    grid.print();
+
+
+
+    std::vector<CellData> vec = *act_file->cellData;
+
+    for ( auto & x : vec )
+    {
+        grid.atIndex(x.index) = x;
+        grid.setValid(x.index);
+    }
+    
 }

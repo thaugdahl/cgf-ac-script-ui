@@ -8,7 +8,7 @@ CellGrid::CellGrid(int _x, int _y, int _z)
     extents = Coord<int>(_x, _y, _z);
 
     grid = new CellData[numCells];
-    valid = new bool[numCells];
+    valid = new unsigned char[numCells / 8 + 1];
 }
 
 CellGrid::CellGrid(const Coord<int> &extents)
@@ -16,6 +16,7 @@ CellGrid::CellGrid(const Coord<int> &extents)
             extents.get<1>(), 
             extents.get<2>())
 { }
+
 
 CellGrid::~CellGrid()
 {
@@ -66,10 +67,47 @@ const CellData &CellGrid::atCoordinate(int _x, int _y, int _z) const
                 ->atCoordinate(_x,_y,_z));
 }
 
+void CellGrid::setValid(int index)
+{
+    int bitmaskIndex = index / 8;
+    int bitOffset = index % 8;
+
+    unsigned char ORMask = 0b1 << bitOffset;
+
+    valid[bitmaskIndex] |= ORMask; 
+}
+
+bool CellGrid::isValid(int index) const
+{
+    int bitmaskIndex = index / 8;
+    int bitOffset = index % 8;
+
+    unsigned char ANDMask = 0b1 << bitOffset;
+
+    return (valid[bitmaskIndex] & ANDMask) > 0;
+}
+
+std::size_t CellGrid::getNumCells() const
+{
+    return numCells;
+}
+
+std::size_t CellGrid::calculateStorageRequirements(std::size_t _numCells)
+{
+    return (_numCells * sizeof(CellData) + (_numCells / 8 + 1) * sizeof(unsigned char));
+}
+
+std::size_t CellGrid::calculateStorageRequirements(int _x, int _y, int _z)
+{
+    std::size_t numCells = _x * _y * _z;
+    return calculateStorageRequirements(numCells);
+}
+
 void CellGrid::print() const
 {
     std::cout << "===Cell Grid===\n";
     std::cout << "Extents: " << extents << "\n";
     std::cout << "Number of cells: " << numCells << "\n";
     std::cout << "Cells per slice: " << cellsPerSlice << "\n";
+    std::cout << "Storage required: " << (calculateStorageRequirements(numCells)) / (1024 * 1024) << "MB\n";
 }
