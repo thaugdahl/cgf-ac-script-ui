@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "coord.hpp"
+#include "Coord.hpp"
 
 #include <fstream>
 #include <sstream>

@@ -1,10 +1,10 @@
-#include "coord.hpp"
+#include "Coord.hpp"
 #include <cwchar>
 #include <iostream>
-#include "act_reader.hpp"
+#include "ACTReader.hpp"
 
 #include <fstream>
-#include "cell_grid.hpp"
+#include "CellGrid.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -12,7 +12,7 @@
 #include <filesystem>
 #include <string_view>
 
-#include "mass_audit_reader.hpp"
+#include "MassAuditReader.hpp"
 #include "MassCase.hpp"
 
 

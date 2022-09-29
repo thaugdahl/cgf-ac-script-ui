@@ -1,7 +1,7 @@
 #ifndef MASSCASE_HPP
 #define MASSCASE_HPP
 
-#include "mass_audit_result.hpp"
+#include "MassAuditResult.hpp"
 
 #include <vector>
 #include <memory>

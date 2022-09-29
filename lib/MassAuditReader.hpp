@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "mass_audit_result.hpp"
+#include "MassAuditResult.hpp"
 
 
 class MassAuditReader

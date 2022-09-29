@@ -1,8 +1,8 @@
 #ifndef CELL_GRID_HPP
 #define CELL_GRID_HPP
 
-#include "coord.hpp"
-#include "act_reader.hpp"
+#include "Coord.hpp"
+#include "ACTReader.hpp"
 
 #include "CellData.hpp"
 

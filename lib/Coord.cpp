@@ -1,4 +1,4 @@
-#include "coord.hpp"
+#include "Coord.hpp"
 
 template <typename T>
 Coord<T>::Coord(T _x, T _y, T _z)

@@ -1,4 +1,4 @@
-#include "cell_grid.hpp"
+#include "CellGrid.hpp"
 #include <iostream>
 
 CellGrid::CellGrid(int _x, int _y, int _z)
