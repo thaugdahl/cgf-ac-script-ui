@@ -1,2 +1,0 @@
-PCW	Pth_x	0
-PCW	Pth_z	0
