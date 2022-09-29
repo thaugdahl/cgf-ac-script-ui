@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD 17)
 # target_compile_options(main PUBLIC ${wxWidgets_CXX_FLAGS})
 # target_compile_definitions(main PUBLIC ${wxWidgets_DEFINITIONS})
 
-add_library(file_utils STATIC lib/act_reader.cpp lib/coord.cpp lib/cell_grid.cpp lib/mass_audit_reader.cpp)
+add_library(file_utils STATIC lib/act_reader.cpp lib/coord.cpp lib/cell_grid.cpp lib/mass_audit_reader.cpp lib/MassCase.cpp)
 target_compile_options(file_utils PUBLIC "-lm")
 target_compile_options(file_utils PUBLIC
     $<$<OR:$<COMPILE_LANGUAGE:CXX>,$<COMPILE_LANGUAGE:CUDA>>: # Set flags if C++ or CUDA

@@ -1,4 +1,5 @@
 #include "coord.hpp"
+#include <cwchar>
 #include <iostream>
 #include "act_reader.hpp"
 
@@ -8,7 +9,11 @@
 #include <algorithm>
 #include <numeric>
 
+#include <filesystem>
+#include <string_view>
+
 #include "mass_audit_reader.hpp"
+#include "MassCase.hpp"
 
 
 void exportACTFiles(std::shared_ptr<ACT_File> act_file)
@@ -134,13 +139,55 @@ int main()
     //             std::get<2>(x));
     // }
 
-    MassAuditReader mar{"testfiles/Sleipner_Dist_369.tsv"};
 
-    auto rows = mar.getRows();
+    const std::filesystem::path testfiles{"testfiles"};
 
-    for ( auto & x : *rows )
+    std::vector<MassCase> cases;
+
+    for ( auto const &dir_entry : std::filesystem::directory_iterator(testfiles) )
     {
-        x.print();
+
+        std::string filename = dir_entry.path();
+        std::string fullFileName = filename;
+
+        if ( fullFileName.find(".tsv") == std::string::npos ) continue;
+
+        std::string needle = "testfiles/";
+        auto s = filename.find("testfiles/");
+        filename.replace(0, needle.length(), "");
+
+        std::cout << filename << "\n";
+
+        std::string extension = ".tsv";
+
+
+        std::string noExtension = filename.substr(filename.find_last_of("_")+1);
+        noExtension = noExtension.substr(0,noExtension.find("."));
+
+        int caseNumber = std::stoi(noExtension);
+        std::cout << caseNumber << std::endl;
+
+        MassAuditReader mar{fullFileName};
+
+        auto rows = mar.getRows();
+
+        MassCase mac{caseNumber, rows};
+        cases.push_back(std::move(mac));
+
     }
+
+    std::fstream aggregate_fh{"aggregate.tsv", std::ios::out};
+
+    aggregate_fh << cases[0].getCSVHeader() << std::endl;
+
+
+    // std::cout << cases[0].getCSVHeader() << std::endl;
+
+    for ( auto & x : cases )
+    {
+        aggregate_fh << x.getCSVRow() << "\n";
+    }
+
+
 
 }
