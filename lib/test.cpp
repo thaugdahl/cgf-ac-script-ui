@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <numeric>
 
+#include "mass_audit_reader.hpp"
+
 
 void exportACTFiles(std::shared_ptr<ACT_File> act_file)
 {
@@ -16,7 +18,7 @@ void exportACTFiles(std::shared_ptr<ACT_File> act_file)
         throw std::runtime_error("Failed to open pwcelldata.csv");
 
     fh << (*(act_file->pathwayCellData))[0].csvHeader() << std::endl;
-    
+
 
     for ( auto &x : *(act_file->pathwayCellData) )
     {
@@ -31,7 +33,7 @@ void exportACTFiles(std::shared_ptr<ACT_File> act_file)
         throw std::runtime_error("Failed to open celldata.csv");
 
     fh << (*(act_file->cellData))[0].csvHeader() << std::endl;
-    
+
 
     for ( auto &x : *(act_file->cellData) )
     {
@@ -71,7 +73,7 @@ void averagePTH(CellGrid &grid, std::string description, int start, int end)
 
     float pth_x_quad_meandiff_sum = 0.0f;
 
-    for ( auto &x : pth_x ) 
+    for ( auto &x : pth_x )
     {
         float test = x - pth_x_mean;
         // std::cout << test << std::endl;
@@ -102,34 +104,43 @@ int main()
     layers.emplace_back("Intrashale 1", 59, 61);
 
 
-    std::shared_ptr<ACT_File> act_file = ACT_Reader::readFile("testfiles/Sleipner_Dist_369_0015.act");
+    // std::shared_ptr<ACT_File> act_file = ACT_Reader::readFile("testfiles/Sleipner_Dist_369_0015.act");
 
-    auto &extents = act_file->extents;
+    // auto &extents = act_file->extents;
 
-    std::cout << extents << std::endl;
+    // std::cout << extents << std::endl;
 
-    std::size_t elementsPerSlice = extents.get<0>() * extents.get<1>();
-    std::size_t elementsTotal = elementsPerSlice * extents.get<2>();
+    // std::size_t elementsPerSlice = extents.get<0>() * extents.get<1>();
+    // std::size_t elementsTotal = elementsPerSlice * extents.get<2>();
 
 
-    CellGrid grid{extents};
+    // CellGrid grid{extents};
 
-    grid.print();
+    // grid.print();
 
-    std::vector<CellData> vec = *act_file->cellData;
+    // std::vector<CellData> vec = *act_file->cellData;
 
-    for ( auto & x : vec )
+    // for ( auto & x : vec )
+    // {
+    //     grid.atIndex(x.index) = x;
+    //     grid.setValid(x.index);
+    // }
+
+    // for ( auto &x : layers )
+    // {
+    //     averagePTH(grid,
+    //             std::get<0>(x),
+    //             std::get<1>(x),
+    //             std::get<2>(x));
+    // }
+
+    MassAuditReader mar{"testfiles/Sleipner_Dist_369.tsv"};
+
+    auto rows = mar.getRows();
+
+    for ( auto & x : *rows )
     {
-        grid.atIndex(x.index) = x;
-        grid.setValid(x.index);
-    }
-
-    for ( auto &x : layers )
-    {
-        averagePTH(grid,
-                std::get<0>(x),
-                std::get<1>(x),
-                std::get<2>(x));
+        x.print();
     }
 
 }
